@@ -1,14 +1,17 @@
-# Full Stack Next.js Webapp Starter
+# Fitness Data
 
-My personal starter pack for building full-stack web applications with Next.js.
+A personal fitness analytics backend. Pulls activity data from Strava, and eventually Garmin and Apple Health. Stores everything in Supabase and builds charts and analysis on top.
+
+The goal is simple: get all your fitness data in one place and see it clearly. Strava is great for recording, but not great for analysis. This tries to fill that gap.
 
 ## Stack
 
 - **Framework**: Next.js 16 (App Router)
+- **Database**: Supabase (PostgreSQL + JSONB)
+- **Charting**: Recharts
 - **Styling**: Emotion (CSS-in-JS)
 - **UI Components**: Radix UI primitives
-- **Code Highlighting**: Prism.js
-- **Theme System**: Custom theming with live editor
+- **Auth**: Strava OAuth 2.0
 
 ## Getting Started
 
@@ -17,26 +20,51 @@ npm install
 npm run dev
 ```
 
+Set up environment variables in `.env.local`:
+```
+NEXT_PUBLIC_STRAVA_CLIENT_ID=your_client_id
+STRAVA_CLIENT_SECRET=your_client_secret
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+```
+
 Open [http://localhost:3000](http://localhost:3000)
 
-## Features
+## What it does
 
-- 🎨 **Theme Editor** - Live theme customization at `/theme-editor` (dev only)
-- 🎭 **Emotion Styling** - Both `styled` components and `css` prop support
-- 🧩 **Component Library** - Pre-built primitives (headings, paragraphs, code blocks, etc.)
-- 🌙 **Theme System** - Customizable design tokens with localStorage persistence
-- ⚡ **Server Components** - Optimized rendering with Next.js App Router
+- Weekly distance chart with activity drill-down
+- Activity explorer with search and filtering
+- Raw stream data (GPS, heart rate, elevation, etc.)
+- Eventually: multi-source sync (Strava, Garmin, Apple Health)
 
-## Structure
+## Folder structure
 
 ```
 src/
-├── app/              # Next.js routes
-├── components/       # Reusable components
-├── theme/           # Theme system & configuration
-└── styles/          # Global styles
+├── app/
+│   ├── stats/        # Weekly distance chart
+│   ├── explorer/     # Activity list and search
+│   ├── api/          # Auth, DB queries, sync endpoints
+│   └── ...
+├── lib/
+│   ├── strava.ts     # Strava API calls
+│   ├── supabase.ts   # Database queries
+│   └── analytics.ts  # Data analysis helpers
+└── data/strava/raw/  # Raw Strava JSON backups
 ```
 
-## Dev Tools
+## Commands
 
-- `/theme-editor` - Interactive theme playground (dev mode only)
+```bash
+npm run dev     # Start dev server
+npm run build   # Build for production
+
+# Load Strava data
+node scripts/load-strava-data.js
+```
+
+## Next steps
+
+- Add Garmin support (they have built-in walk vs run classification)
+- Add Apple Health data (sleep, heart rate trends)
+- Better handling when the same run comes from multiple sources
